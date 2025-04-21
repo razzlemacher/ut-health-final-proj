@@ -1,3 +1,6 @@
+# use the environment.yml for a more accurate install.
+# this is for a simpler install experience if you want to use it.
+
 conda create --name health-a8 python=3.12
 conda activate health-a8
 pip install networkx[default]
