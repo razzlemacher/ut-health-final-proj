@@ -55,3 +55,4 @@ The pyvis graph is useful for:
 * exploring the nodes and edges
 * validating the structure of the `networkx` graph that this pyvis graph represents
 
+<img src="images/sample_pyvis_graph_9_nodes.jpg" alt="Sample Pyvis Graph" width="800"/>
