@@ -1,0 +1,361 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1200px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"age": "2121-08-01 00:00:00", "age_bucket": 80, "color": "#97c2fc", "font": {"size": 5}, "gender": "M", "hadm_id": 137421, "id": 4074, "label": "4074", "shape": "dot", "size": 10, "title": "Patient ID: 4074\nGender: M\nAge Bucket: 80"}, {"age": "2108-08-09 00:00:00", "age_bucket": 85, "color": "#97c2fc", "font": {"size": 5}, "gender": "M", "hadm_id": 107779, "id": 15048, "label": "15048", "shape": "dot", "size": 10, "title": "Patient ID: 15048\nGender: M\nAge Bucket: 85"}, {"age": "2062-05-24 00:00:00", "age_bucket": 65, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 150068, "id": 82433, "label": "82433", "shape": "dot", "size": 10, "title": "Patient ID: 82433\nGender: F\nAge Bucket: 65"}, {"age": "2095-04-29 00:00:00", "age_bucket": 55, "color": "#97c2fc", "font": {"size": 5}, "gender": "M", "hadm_id": 168745, "id": 90889, "label": "90889", "shape": "dot", "size": 10, "title": "Patient ID: 90889\nGender: M\nAge Bucket: 55"}, {"age": "2108-04-22 00:00:00", "age_bucket": 75, "color": "#97c2fc", "font": {"size": 5}, "gender": "M", "hadm_id": 172851, "id": 64908, "label": "64908", "shape": "dot", "size": 10, "title": "Patient ID: 64908\nGender: M\nAge Bucket: 75"}, {"age": "2090-05-28 00:00:00", "age_bucket": 75, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 102912, "id": 70273, "label": "70273", "shape": "dot", "size": 10, "title": "Patient ID: 70273\nGender: F\nAge Bucket: 75"}, {"age": "2078-09-11 00:00:00", "age_bucket": 75, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 110203, "id": 15017, "label": "15017", "shape": "dot", "size": 10, "title": "Patient ID: 15017\nGender: F\nAge Bucket: 75"}, {"age": "2042-06-01 00:00:00", "age_bucket": 85, "color": "#97c2fc", "font": {"size": 5}, "gender": "M", "hadm_id": 144029, "id": 72753, "label": "72753", "shape": "dot", "size": 10, "title": "Patient ID: 72753\nGender: M\nAge Bucket: 85"}, {"age": "2038-05-30 00:00:00", "age_bucket": 80, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 194014, "id": 17906, "label": "17906", "shape": "dot", "size": 10, "title": "Patient ID: 17906\nGender: F\nAge Bucket: 80"}, {"age": "2019-08-05 00:00:00", "age_bucket": 85, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 180201, "id": 16148, "label": "16148", "shape": "dot", "size": 10, "title": "Patient ID: 16148\nGender: F\nAge Bucket: 85"}, {"age": "1842-07-16 00:00:00", "age_bucket": 95, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 160456, "id": 92025, "label": "92025", "shape": "dot", "size": 10, "title": "Patient ID: 92025\nGender: F\nAge Bucket: 95"}, {"age": "2091-04-03 00:00:00", "age_bucket": 50, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 133867, "id": 88991, "label": "88991", "shape": "dot", "size": 10, "title": "Patient ID: 88991\nGender: F\nAge Bucket: 50"}, {"age": "2109-06-14 00:00:00", "age_bucket": 65, "color": "#97c2fc", "font": {"size": 5}, "gender": "M", "hadm_id": 127912, "id": 49036, "label": "49036", "shape": "dot", "size": 10, "title": "Patient ID: 49036\nGender: M\nAge Bucket: 65"}, {"age": "2062-05-24 00:00:00", "age_bucket": 65, "color": "#97c2fc", "font": {"size": 5}, "gender": "F", "hadm_id": 144230, "id": 10335, "label": "10335", "shape": "dot", "size": 10, "title": "Patient ID: 10335\nGender: F\nAge Bucket: 65"}]);
+                  edges = new vis.DataSet([{"font": {"size": 5}, "from": 4074, "icd9": "4280", "label": "CHF NOS", "short_title": "CHF NOS", "title": "ICD9 Code: 4280", "to": 15048, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "78552", "label": "Septic shock", "short_title": "Septic shock", "title": "ICD9 Code: 78552", "to": 82433, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "2724", "label": "Hyperlipidemia NEC/NOS", "short_title": "Hyperlipidemia NEC/NOS", "title": "ICD9 Code: 2724", "to": 90889, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "5789", "label": "Gastrointest hemorr NOS", "short_title": "Gastrointest hemorr NOS", "title": "ICD9 Code: 5789", "to": 64908, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "V5861", "label": "Long-term use anticoagul", "short_title": "Long-term use anticoagul", "title": "ICD9 Code: V5861", "to": 70273, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 15017, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "V1046", "label": "Hx-prostatic malignancy", "short_title": "Hx-prostatic malignancy", "title": "ICD9 Code: V1046", "to": 72753, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 16148, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "4280", "label": "CHF NOS", "short_title": "CHF NOS", "title": "ICD9 Code: 4280", "to": 92025, "width": 1}, {"font": {"size": 5}, "from": 4074, "icd9": "V5861", "label": "Long-term use anticoagul", "short_title": "Long-term use anticoagul", "title": "ICD9 Code: V5861", "to": 88991, "width": 1}, {"font": {"size": 5}, "from": 90889, "icd9": "99859", "label": "Other postop infection", "short_title": "Other postop infection", "title": "ICD9 Code: 99859", "to": 15048, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "2720", "label": "Pure hypercholesterolem", "short_title": "Pure hypercholesterolem", "title": "ICD9 Code: 2720", "to": 64908, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 70273, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 15017, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 16148, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "4280", "label": "CHF NOS", "short_title": "CHF NOS", "title": "ICD9 Code: 4280", "to": 15048, "width": 1}, {"font": {"size": 5}, "from": 72753, "icd9": "4280", "label": "CHF NOS", "short_title": "CHF NOS", "title": "ICD9 Code: 4280", "to": 92025, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "1974", "label": "Sec malig neo sm bowel", "short_title": "Sec malig neo sm bowel", "title": "ICD9 Code: 1974", "to": 49036, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "2851", "label": "Ac posthemorrhag anemia", "short_title": "Ac posthemorrhag anemia", "title": "ICD9 Code: 2851", "to": 16148, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "2851", "label": "Ac posthemorrhag anemia", "short_title": "Ac posthemorrhag anemia", "title": "ICD9 Code: 2851", "to": 10335, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "496", "label": "Chr airway obstruct NEC", "short_title": "Chr airway obstruct NEC", "title": "ICD9 Code: 496", "to": 70273, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "V1582", "label": "History of tobacco use", "short_title": "History of tobacco use", "title": "ICD9 Code: V1582", "to": 82433, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "4019", "label": "Hypertension NOS", "short_title": "Hypertension NOS", "title": "ICD9 Code: 4019", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 64908, "icd9": "4019", "label": "Hypertension NOS", "short_title": "Hypertension NOS", "title": "ICD9 Code: 4019", "to": 88991, "width": 1}, {"font": {"size": 5}, "from": 70273, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 15017, "width": 1}, {"font": {"size": 5}, "from": 70273, "icd9": "4019", "label": "Hypertension NOS", "short_title": "Hypertension NOS", "title": "ICD9 Code: 4019", "to": 82433, "width": 1}, {"font": {"size": 5}, "from": 70273, "icd9": "2930", "label": "Delirium d/t other cond", "short_title": "Delirium d/t other cond", "title": "ICD9 Code: 2930", "to": 49036, "width": 1}, {"font": {"size": 5}, "from": 70273, "icd9": "V1011", "label": "Hx-bronchogenic malignan", "short_title": "Hx-bronchogenic malignan", "title": "ICD9 Code: V1011", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 70273, "icd9": "V5861", "label": "Long-term use anticoagul", "short_title": "Long-term use anticoagul", "title": "ICD9 Code: V5861", "to": 88991, "width": 1}, {"font": {"size": 5}, "from": 70273, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 16148, "width": 1}, {"font": {"size": 5}, "from": 92025, "icd9": "4280", "label": "CHF NOS", "short_title": "CHF NOS", "title": "ICD9 Code: 4280", "to": 15048, "width": 1}, {"font": {"size": 5}, "from": 92025, "icd9": "5070", "label": "Food/vomit pneumonitis", "short_title": "Food/vomit pneumonitis", "title": "ICD9 Code: 5070", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 92025, "icd9": "5119", "label": "Pleural effusion NOS", "short_title": "Pleural effusion NOS", "title": "ICD9 Code: 5119", "to": 15017, "width": 1}, {"font": {"size": 5}, "from": 88991, "icd9": "4019", "label": "Hypertension NOS", "short_title": "Hypertension NOS", "title": "ICD9 Code: 4019", "to": 82433, "width": 1}, {"font": {"size": 5}, "from": 88991, "icd9": "4019", "label": "Hypertension NOS", "short_title": "Hypertension NOS", "title": "ICD9 Code: 4019", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 88991, "icd9": "E8798", "label": "Abn react-procedure NEC", "short_title": "Abn react-procedure NEC", "title": "ICD9 Code: E8798", "to": 15048, "width": 1}, {"font": {"size": 5}, "from": 15048, "icd9": "0389", "label": "Septicemia NOS", "short_title": "Septicemia NOS", "title": "ICD9 Code: 0389", "to": 82433, "width": 1}, {"font": {"size": 5}, "from": 15048, "icd9": "9971", "label": "Surg compl-heart", "short_title": "Surg compl-heart", "title": "ICD9 Code: 9971", "to": 16148, "width": 1}, {"font": {"size": 5}, "from": 16148, "icd9": "2851", "label": "Ac posthemorrhag anemia", "short_title": "Ac posthemorrhag anemia", "title": "ICD9 Code: 2851", "to": 10335, "width": 1}, {"font": {"size": 5}, "from": 16148, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 15017, "width": 1}, {"font": {"size": 5}, "from": 16148, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 15017, "icd9": "42731", "label": "Atrial fibrillation", "short_title": "Atrial fibrillation", "title": "ICD9 Code: 42731", "to": 17906, "width": 1}, {"font": {"size": 5}, "from": 15017, "icd9": "5990", "label": "Urin tract infection NOS", "short_title": "Urin tract infection NOS", "title": "ICD9 Code: 5990", "to": 82433, "width": 1}, {"font": {"size": 5}, "from": 82433, "icd9": "2930", "label": "Delirium d/t other cond", "short_title": "Delirium d/t other cond", "title": "ICD9 Code: 2930", "to": 49036, "width": 1}, {"font": {"size": 5}, "from": 82433, "icd9": "4019", "label": "Hypertension NOS", "short_title": "Hypertension NOS", "title": "ICD9 Code: 4019", "to": 17906, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": false,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
