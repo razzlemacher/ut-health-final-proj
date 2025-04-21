@@ -16,7 +16,7 @@ These are the important packages used:
 * __pyvis__ for visualizing and debugging the network graph
 
 # Project Architecture
-<img src="images/proj-architecture.jpg" alt="Architecture" width="800"/>
+<img src="images/system_flow.png" alt="Architecture" width="800"/>
 
 
 # Creating the Graph Network
