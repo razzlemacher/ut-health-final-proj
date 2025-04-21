@@ -35,7 +35,7 @@ E.g.:,
 
 Pick a pickle file accordingly.
 
-The pyvis files in the [pyvis](pyvis/) folder named in the same manner.
+The pyvis files in the [pyvis](pyvis/) folder are named in the same manner.
 
 # Pickle files of network graph
 The graph is saved as a pickle file in the directory [pickle](pickle/)
