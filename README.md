@@ -5,8 +5,9 @@ Final high risk project for AI in Healthcare
 Install conda from the anaconda website at [www.anaconda.org/download](https://www.anaconda.com/download)
 
 
-After installing Anaconda, open a command prompt and execute:
-`conda env create -f environment.yml`
+After installing Anaconda, open a command prompt and:
+* go to the directory where this repo has been downloaded
+* execute `conda env create -f environment.yml`
 
 These are the important packages used:
 
