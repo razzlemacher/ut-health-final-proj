@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d3" for="edge" attr.name="title" attr.type="string" />
+  <key id="d2" for="edge" attr.name="icd9" attr.type="string" />
+  <key id="d1" for="node" attr.name="age" attr.type="string" />
+  <key id="d0" for="node" attr.name="gender" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="4074">
+      <data key="d0">M</data>
+      <data key="d1">2121-08-01 00:00:00</data>
+    </node>
+    <node id="90889">
+      <data key="d0">M</data>
+      <data key="d1">2095-04-29 00:00:00</data>
+    </node>
+    <node id="72753">
+      <data key="d0">M</data>
+      <data key="d1">2042-06-01 00:00:00</data>
+    </node>
+    <node id="64908">
+      <data key="d0">M</data>
+      <data key="d1">2108-04-22 00:00:00</data>
+    </node>
+    <node id="70273">
+      <data key="d0">F</data>
+      <data key="d1">2090-05-28 00:00:00</data>
+    </node>
+    <edge source="4074" target="90889">
+      <data key="d2">2724</data>
+      <data key="d3">Hyperlipidemia NEC/NOS</data>
+    </edge>
+    <edge source="4074" target="64908">
+      <data key="d2">5789</data>
+      <data key="d3">Gastrointest hemorr NOS</data>
+    </edge>
+    <edge source="4074" target="72753">
+      <data key="d2">V1046</data>
+      <data key="d3">Hx-prostatic malignancy</data>
+    </edge>
+    <edge source="4074" target="70273">
+      <data key="d2">V5861</data>
+      <data key="d3">Long-term use anticoagul</data>
+    </edge>
+    <edge source="72753" target="64908">
+      <data key="d2">4019</data>
+      <data key="d3">Hypertension NOS</data>
+    </edge>
+    <edge source="72753" target="70273">
+      <data key="d2">42731</data>
+      <data key="d3">Atrial fibrillation</data>
+    </edge>
+    <edge source="64908" target="70273">
+      <data key="d2">496</data>
+      <data key="d3">Chr airway obstruct NEC</data>
+    </edge>
+  </graph>
+</graphml>

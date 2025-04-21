@@ -1,0 +1,5 @@
+conda create --name health-a8 python=3.12
+conda activate health-a8
+pip install networkx[default]
+pip install SQLAlchemy
+pip install pyvis
