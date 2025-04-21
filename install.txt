@@ -6,3 +6,4 @@ conda activate health-a8
 pip install networkx[default]
 pip install SQLAlchemy
 pip install pyvis
+pip install torch torch-geometric scikit-learn
