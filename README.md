@@ -24,11 +24,17 @@ These are the important packages used:
 The graph is created in the jupyter file `01-create-network-graph.ipynb`.
 This file assumes you have SQL Lite installed and MIMIC-III data loaded into it.
 
-This file generates two main outputs:
-* __pickle file__: this is in the [pickle](pickle/) folder which contains the serialized network graph in binary form
-* __pyvis file__: this is in the [pyvis](pyvis/) folder which contains the html representation of the network graph
+This file generates four main outputs:
+* __pickle file__: this is in the [pickle](pickle/) folder which contains the serialized network graphs in binary form. It has 2 types of files:
+  * patient graph pickle file (all patients connected by diagnosis to other patients)
+  * patient graph similarity pickle file (all patients connected by similarity to other patients)
+* __pyvis file__: this is in the [pyvis](pyvis/) folder which contains the html representations of the network graph
+  * patient graph visual for main patient graph
+  * patient graph visual for patient similarity graph
 
-The pickle files are named in the format `patients_graph_max_X_nodes.gpickle`. The `X` in the file name specifies the number of patients nodes, hence, the size of the graph.
+
+The pickle files are named in the format `patients_graph_max_XX_nodes.gpickle`. The `XX` in the file name specifies the number of patients nodes, hence, the size of the graph.
+Files that contain data for similarity have the word `similarity` appended in them. E.g., `patients_graph_max_XX_nodes_similarity.gpickle`
 
 E.g.:, 
 * `patients_graph_max_10_nodes.gpickle` means the pickle file has 10 patient nodes and is a relatively small and manageable file to process on a laptop.
