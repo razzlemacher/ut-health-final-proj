@@ -1,3 +1,5 @@
 __pycache__/
+pickle/patients_graph_max_1000_nodes.gpickle
+pickle/patients_graph_max_1000_nodes_similar.gpickle
 pickle/patients_graph_max_10000_nodes.gpickle
 pickle/patients_graph_max_10000_nodes_similar.gpickle
