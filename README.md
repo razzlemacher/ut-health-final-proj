@@ -44,10 +44,26 @@ The R-GCN model is created using the `RGCNConv` layers.
 ## Input Data
 
 The `networkx` graph is transformed into the `torch_geometric.data.HeteroData` data type.
+`HeteroData` has 3 types of information:
+1. Node data
+2. Edge data
+3. Edge type data
 
 ### Node Data
-* Data shape:  `[number of nodes, number of node features]`, number of nodes is the total number of nodes in the graph
-* Example of __Node__ data:
+This is filled into `HeteroData.x`.
+
+`x` data shape:  `[number of nodes, number of node features]`, number of nodes is the total number of nodes in the graph
+
+#### User friendly structure
+The data can be created using:
+* `HeteroData[patient_id].x` = `[num_patients, num_patient_features]`
+* `HeteroData[diagnosis_id].x` = `[num_diagnoses, num_diagnosis_features]`
+* `HeteroData[procedures].x` = `[num_procedures, num_procedure_features]`
+
+#### Internal structure
+The data within `HeteroData` nodes is represented as a single matrix.
+
+Example of internal __Node__ data:
   * there are 1 patient nodes with 2 features, 2 diagnosis nodes, 1 procedure nodes with 1 feature
   * Data shape will be `[1+2+1, 2+0+1]` which is `[4, 3]`.
 
@@ -67,7 +83,9 @@ The matrix above is one-hot encoded. Each row represents one node:
 Note that each row is an index into a node.
 
 ### Edge Data
-Data shape: `[2, total number of edges]`
+This is filled into `HeteroData.edge_index`.
+
+`edge_index` data shape: `[2, total number of edges]`
   * First row at index `0`: indices of all source nodes
   * Second row at index `1`: indices of all target nodes 
 
@@ -81,6 +99,17 @@ The __edge__ matrix shows that the:
 * second patient node is connected to the fourth diagnosis node. 
 
 The indices in the __edge__ matrix above refer to the node matrix rows.
+
+### Edge Type Data
+
+This is the simplest. It is a 1D vector that has the same number of rows as the __edage_ data matrix.
+Each entry represents the type of edge that exists in the __edge__ matrix. Hence the shape is `[total number of edges]`
+
+Our graph has 2 types of edges:
+1. `Patient`--`has_diagnosis`-->`Diagnosis` represented by `0`
+2. `Patient`--`had_procedure`-->`Procedure` represented by `1`
+
+Edge type data is very useful for R-GCN networks.
 
 ## Validation Data
 
