@@ -155,8 +155,5 @@ The pyvis graph is useful for:
 * exploring the nodes and edges
 * validating the structure of the `networkx` graph that this pyvis graph represents
 
-Sample Pyvis graph with 9 patient nodes connected by shared diagnoses:
-<img src="images/sample_pyvis_graph_9_nodes.jpg" alt="Sample Pyvis Graph" width="800"/>
-
-Sample Pyvis similarity graph with 5 patients. Each edge has a similarity score connecting two patients:
-<img src="images/sample_patient_similarity_5_nodes.jpg" alt="Sample Pyvis Graph" width="600"/>
+Sample Pyvis graph with 150 nodes connected by shared diagnoses and procedures:
+<img src="images/sample_pyvis_graph_200_nodes.jpg" alt="Sample Pyvis Graph" width="800"/>
