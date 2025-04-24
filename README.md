@@ -34,9 +34,9 @@ The graph is created in the jupyter file `02-create-hetero-network-graph.ipynb`.
 This file assumes you have SQL Lite installed and MIMIC-III data loaded into it.
 
 _If you do not have SQL Lite installed and configured, you can use the output of this file_ which are:
-* [pickle graph](pickle/max_20000_nodes_graph.gpickle)
-* [pickled similarity dataframe](pickle/max_20000_nodes_similarity.gpickle)
-* [sample pyvis html graph](pyvis/graph_max_1000_nodes.html)
+* [pickle graph](pickle/max_20000_nodes_graph.gpickle) : a binary of networkx graph loaded by the R-GCN in `03-rgcn-model.ipynb`
+* [pickled similarity dataframe](pickle/max_20000_nodes_similarity.gpickle) : a binary of patient similarity dataframe loaded by the R-GCN in `03-rgcn-model.ipynb`
+* [sample pyvis html graph](pyvis/graph_max_1000_nodes.html) : html file you can load in your browser
 
 
 The `networkx` library is used to create the graph. The graph has 3 nodes:
