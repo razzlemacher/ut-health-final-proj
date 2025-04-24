@@ -14,6 +14,7 @@ These are the important packages used:
 * __SQLAlchemy__ for loading MIMIC-III data
 * __networkx__ for creating the network graph 
 * __pyvis__ for visualizing and debugging the network graph
+* __torch geometric__ for the R-GCN neural network
 
 
 Visit https://git-lfs.com/ and download the binary for Git Large File Storage. Run the binary to install the program.
@@ -29,8 +30,14 @@ Go to your git repository directory and execute the commands so that git and lfs
 
 # Graph Network Structure
 
-The graph is created in the jupyter file `01-create-network-graph.ipynb`.
+The graph is created in the jupyter file `02-create-hetero-network-graph.ipynb`.
 This file assumes you have SQL Lite installed and MIMIC-III data loaded into it.
+
+_If you do not have SQL Lite installed and configured, you can use the output of this file which are:
+* [pickle graph](pickle/max_20000_nodes_graph.gpickle)
+* [pickled similarity dataframe](pickle/max_20000_nodes_similarity.gpickle)
+* [sample pyvis html graph](pyvis/graph_max_1000_nodes.html)
+
 
 The `networkx` library is used to create the graph. The graph has 3 nodes:
 1. Patient
