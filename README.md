@@ -15,6 +15,15 @@ These are the important packages used:
 * __networkx__ for creating the network graph 
 * __pyvis__ for visualizing and debugging the network graph
 
+
+Visit https://git-lfs.com/ and download the binary for Git Large File Storage. Run the binary to install the program.
+
+Then follow the instructions on the website above. E.g., for windows `git lfs install`.
+
+Go to your git repository directory and execute the commands so that git and lfs track the pickle files:
+1. `git lfs track "*.gpickle"`
+2. `git add .gitattributes`
+
 # Project Architecture
 <img src="images/system_flow.png" alt="Architecture" width="800"/>
 
