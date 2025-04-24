@@ -155,5 +155,12 @@ The pyvis graph is useful for:
 * exploring the nodes and edges
 * validating the structure of the `networkx` graph that this pyvis graph represents
 
-Sample Pyvis graph with 150 nodes connected by shared diagnoses and procedures:
+Sample Pyvis graph with 200 nodes connected by shared diagnoses and procedures:
+* patients are blue
+* diagnosis are green
+* procedures are red
+
+The graph is interactive and can be zoomed in and out, and can be rotated in the browser once loaded from the [pyvis](pyvis/) directory. You can click on the nodes to see the details of the node.
+
+The pyvis graph with 200 nodes connected by shared diagnoses and procedures:
 <img src="images/sample_pyvis_graph_200_nodes.jpg" alt="Sample Pyvis Graph" width="800"/>
