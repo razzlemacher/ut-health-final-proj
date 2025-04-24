@@ -1,3 +1,2 @@
 __pycache__/
 pickle/patients_graph_max_1000*.gpickle
-pickle/*.csv
