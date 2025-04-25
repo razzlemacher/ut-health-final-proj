@@ -102,8 +102,8 @@ Note that each row is an index into a node.
 This is filled into `HeteroData.edge_index`.
 
 `edge_index` data shape: `[2, total number of edges]`
-  * First row at index `0`: indices of all source nodes
-  * Second row at index `1`: indices of all target nodes 
+  * First row at index `0`: indices of all source nodes (always patient)
+  * Second row at index `1`: indices of all target nodes (e.g. diagnosis or procedure)
 
 Example, if there are 5 edges, then the matrix will be `[2, 5]` and look like:
 
