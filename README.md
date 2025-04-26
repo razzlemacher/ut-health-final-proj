@@ -49,7 +49,7 @@ The graph is connected via edges:
 * `patient`--`had_procedure`-->`procedure`
 
 
-# Network Graph
+# Relational Convolutional Graph
 We use a heterogenous graph called `R-GCN` as it can handle different types of graph nodes as described in the section in [Graph Network Structure](#graph-network-structure).
 
 ## Model
