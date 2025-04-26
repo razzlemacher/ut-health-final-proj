@@ -128,12 +128,8 @@ Our graph has 2 types of edges:
 Edge type data is very useful for R-GCN networks.
 
 ## Validation Data
-Validation data is calculate using Jaccard similarity.
-The similarity is based on the commonality between patient diagnosis and patient procedures for the patient. The similarity file is saved in the [pickle](pickle/) folder with file name such as `max_20000_nodes_graph.gpickle`
-
-## Output Data
-
-# Inference
+Validation data is calculated using Jaccard similarity.
+The similarity is based on the commonality between patient diagnosis and patient procedures for the patient. The similarity file is a `pandas dataframe` saved in the [pickle](pickle/) folder with file name such as `max_20000_nodes_similarity.gpickle`
 
 
 # Pickle files of network graph
